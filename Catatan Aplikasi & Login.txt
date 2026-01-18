@@ -1,0 +1,56 @@
+Username :rei
+Password :12345678
+
+
+1. Alur Barang Masuk (Restock/Penambahan)
+Alur ini digunakan ketika ada barang baru datang dari supplier atau ditemukan barang yang sebelumnya tidak tercatat.
+
+Langkah 1 (Input): User membuka halaman stok barang dan memilih fitur "Barang Masuk". User memilih barang yang dimaksud dan memasukkan jumlah yang datang.
+
+Langkah 2 (Proses): Sistem membaca data stok terakhir di database. Misalnya, stok awal Kursi adalah 10. User memasukkan barang masuk 5.
+
+Langkah 3 (Update): Sistem melakukan operasi matematika penjumlahan. Database akan langsung mengupdate nilai stok tersebut menjadi 15.
+
+Langkah 4 (Log): Sistem mencatat riwayat bahwa pada jam sekian, terjadi penambahan stok sebanyak 5 dengan keterangan (misal: "Pengadaan Barang Baru").
+
+2. Alur Barang Keluar (Manual Out/Pengurangan)
+Alur ini digunakan jika barang berkurang bukan karena dipinjam, misalnya karena barang rusak, hilang, atau dihibahkan.
+
+Langkah 1 (Input): User memilih fitur "Barang Keluar". User memilih barang dan memasukkan jumlah yang ingin dikeluarkan.
+
+Langkah 2 (Validasi): Sebelum diproses, sistem mengecek: "Apakah jumlah yang ingin dikeluarkan tersedia?". Jika stok hanya 5 tapi user ingin mengeluarkan 10, sistem akan menolak (error).
+
+Langkah 3 (Proses): Jika valid, sistem melakukan operasi matematika pengurangan. Stok awal 15 dikurangi 3 (rusak), maka stok di database menjadi 12.
+
+Langkah 4 (Update & Log): Database diperbarui, dan sistem mencatat alasan keluarnya barang tersebut agar admin tahu mengapa stok berkurang tanpa ada transaksi peminjaman.
+
+
+1. Alur Peminjaman (Stock Out - Temporary)
+Alur ini dimulai ketika seseorang ingin menggunakan barang milik instansi/organisasi.
+
+Identifikasi & Validasi: Saat admin mengisi form, sistem mengecek ketersediaan stok di tabel item. Jika jumlah yang diminta tersedia, transaksi dilanjutkan.
+
+Pencatatan Transaksi: Sistem membuat nomor referensi (ID Peminjaman) dan mencatat siapa peminjamnya serta kapan batas waktu pengembaliannya.
+
+Reservasi Stok: Begitu tombol "Simpan" diklik, sistem secara otomatis memotong jumlah stok di gudang.
+
+Logika: Stok Gudang - Jumlah Pinjam = Sisa Stok.
+
+Perubahan Status: Transaksi ini diberi label status "Dipinjam". Barang sekarang secara legal berada di tangan peminjam, bukan lagi tanggung jawab gudang.
+
+2. Alur Pengembalian (Stock In - Recovery)
+Alur ini terjadi ketika peminjam mengembalikan barang yang telah dibawa. Ini adalah proses untuk "memulihkan" stok gudang.
+
+Verifikasi Data: Admin mencari data peminjaman yang masih aktif. Sistem menampilkan barang apa saja yang dibawa oleh orang tersebut.
+
+Pemeriksaan Kondisi: Saat barang diterima, admin memasukkan jumlah yang kembali dan kondisinya (Baik/Rusak/Hilang).
+
+Pemulihan Stok: Sistem menambahkan kembali jumlah barang yang dikembalikan ke tabel item.
+
+Logika: Stok Gudang + Jumlah Kembali = Stok Baru.
+
+Penyelesaian Transaksi: * Jika barang kembali lengkap, status berubah menjadi "Dikembalikan".
+
+Jika ada catatan "Rusak/Hilang", stok tidak akan bertambah dan akan memunculkan kondisi barang rusak/hilang
+
+Penutupan Siklus: Transaksi dianggap selesai dan tidak akan muncul lagi di daftar "Barang yang Perlu Dikembalikan".
