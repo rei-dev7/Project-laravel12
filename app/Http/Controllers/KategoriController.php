@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Kategori;
+use Illuminate\Http\Request;
+
+class KategoriController extends Controller
+{
+    public function index()
+    {
+        $kategori = Kategori::orderBy('id_kategori', 'desc')->get();
+        return view('kategori.index', compact('kategori'));
+    }
+
+    public function create()
+    {
+        return view('kategori.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|unique:kategori|max:100',
+        ]);
+
+        Kategori::create([
+            'nama_kategori' => $request->nama_kategori,
+        ]);
+
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan');
+    }
+
+    /** ✅ WAJIB $kategori */
+    public function edit(Kategori $kategori)
+    {
+        return view('kategori.edit', compact('kategori'));
+    }
+
+    /** ✅ WAJIB $kategori */
+    public function update(Request $request, Kategori $kategori)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|max:100|unique:kategori,nama_kategori,' 
+                . $kategori->id_kategori . ',id_kategori',
+        ]);
+
+        $kategori->update([
+            'nama_kategori' => $request->nama_kategori,
+        ]);
+
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui');
+    }
+
+    /** ✅ WAJIB $kategori */
+    public function destroy(Kategori $kategori)
+    {
+        $kategori->delete();
+
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus');
+    }
+}
